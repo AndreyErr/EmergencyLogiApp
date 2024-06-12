@@ -13,7 +13,7 @@ function ReactionTable({ formData, onChange, allowAddRemoveRows, existPattern, t
   const [loadingStates, setLoadingStates] = useState(Array(formData.pattern_input.length).fill(false));
   useEffect(() => {
     fatchItems(10000, 1).then((result) => {
-      const names = result.data[0].map(item => item.name);
+      const names = result.data[0].map(item => [item.name, item.flag]);
       setPossibleNames(names);
     });
   }, []);
@@ -44,12 +44,13 @@ function ReactionTable({ formData, onChange, allowAddRemoveRows, existPattern, t
         }
 
         if (Array.isArray(pattern)) {
+          console.log(pattern)
             const processedRows = pattern.map(item => ({
                 id: generateId(),
                 name: key,
                 item_name: item.item_name,
                 valueType: item.reaction_item.value_type,
-                flag: true,
+                flag: item.status == "not_active" ? false : true,
                 defFlag: pat_common,
                 defValue: item.default_reaction_item,
                 subRows: Array.isArray(item.reaction_item.value) ? item.reaction_item.value.map(subItem => ({
@@ -208,7 +209,7 @@ function ReactionTable({ formData, onChange, allowAddRemoveRows, existPattern, t
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const renderNameOptions = () => possibleNames.map((name, index) => (
-    <option key={index} value={name}>{name}</option>
+    name[1] != 2 ? <option key={index} value={name[0]}>{name[0]}</option> : null
   ));
 
   const ValueCell = React.memo(({ id, valueType, subRows = [], item, disabled }) => {
@@ -398,16 +399,17 @@ function ReactionTable({ formData, onChange, allowAddRemoveRows, existPattern, t
                         getPattern(item.name, "pattern_reaction", e.target.checked, index);
                         setSwitchStates(prevStates => updateStateAtIndex(prevStates, index, e.target.checked));
                       }}
-                      checked={switchStates[index]} // Use state to control the switch
+                      checked={switchStates[index]}
                       disabled={typeOfAction == "look"}
                     />}
-                    {loadingStates[index] && <Loader />} {/* Render Loader if loading is active for this switch */}
+                    {loadingStates[index] && <Loader />}
                     {patternStatus[index] === 'found' && <span style={{ color: 'green' }}>Найдено</span>}
                     {patternStatus[index] === 'notFound' && <span style={{ color: 'red' }}>Не найдено</span>}
                   </td>
                 </tr>
                 {addedRows.filter(row => row.name === item.name).map(row => (
                   <tr key={row.id}>
+                    {console.log(row)}
                     {disablet = row.defFlag}
                     <td></td>
                     <td>

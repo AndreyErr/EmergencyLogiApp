@@ -68,7 +68,7 @@ function MapContainerForIncidentCreate(props) {
             for(const staorageItemId in props.coordsStoragesItems){
                 var marker = L.marker(props.coordsStoragesItems[staorageItemId][1], {icon: storage}).addTo(map);
                 marker.bindTooltip(props.coordsStoragesItems[staorageItemId][0].toString(), {direction: 'top', permanent: true})
-                marker.bindPopup(staorageItemId + 10, {direction: 'bottom'})
+                // marker.bindPopup(staorageItemId + 10, {direction: 'bottom'})
             }
             for(const pathId in props.pathStoragesItems){
                 var pathLayer = L.geoJson().addTo(map);

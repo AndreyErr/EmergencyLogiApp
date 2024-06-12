@@ -172,16 +172,18 @@ class incidentsService {
                     if(keyNotUsed == key){
                         for(const item_index in pattern_react_for_code_name[key]){
                             const item = pattern_react_for_code_name[key][item_index]
-                            if(item.default_reaction_item != null){
-                                if (item.item_name in outputJson){
-                                    outputJson[item.item_name] += item.default_reaction_item
-                                }else{
-                                    outputJson[item.item_name] = item.default_reaction_item
-                                }
-                                if (item.item_name in outputJsonByIncident[code_name].items){
-                                    outputJsonByIncident[code_name].items[item.item_name] += item.default_reaction_item
-                                }else{
-                                    outputJsonByIncident[code_name].items[item.item_name] = item.default_reaction_item
+                            if(item.status == 'active'){
+                                if(item.default_reaction_item != null){
+                                    if (item.item_name in outputJson){
+                                        outputJson[item.item_name] += item.default_reaction_item
+                                    }else{
+                                        outputJson[item.item_name] = item.default_reaction_item
+                                    }
+                                    if (item.item_name in outputJsonByIncident[code_name].items){
+                                        outputJsonByIncident[code_name].items[item.item_name] += item.default_reaction_item
+                                    }else{
+                                        outputJsonByIncident[code_name].items[item.item_name] = item.default_reaction_item
+                                    }
                                 }
                             }
                         }
@@ -239,7 +241,7 @@ class incidentsService {
         // и результаты сохранены в объекте results
         await pgdb.query(`
         UPDATE incidents
-        SET json = json || '{"sent": ${resultsJSON}}'
+        SET json = json || '{"sent": ${resultsJSON}, "processed": "fin"}'
         WHERE id = ${id};`);
     }
 
@@ -462,6 +464,7 @@ class incidentsService {
             incidentsData[incident_index].min_radius = min_radius
             incidentsData[incident_index].max_radius = max_radius
             incidentsData[incident_index].react_time = incident.react_time
+            incidentsData[incident_index].react_time_max = incident.react_time * road_distanse_multiplexer
             let current_radius = min_radius
             let find_all = false
             let finale_move_flag = false
@@ -706,10 +709,11 @@ class incidentsService {
         let coefData = {
             "percent_mistake": percent,
             "percent_taken_from_warehouse": percent_taken_from_warehouse,
-            "viacle_avarge_speed": viacle_avarge_speed
+            "viacle_avarge_speed": viacle_avarge_speed,
+            "road_distanse_multiplexer": road_distanse_multiplexer
         }
         
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Ожидание 10 секунд перед
+        // await new Promise(resolve => setTimeout(resolve, 20000)); // Ожидание 10 секунд
         const reactReport = await this.madeReactReport(storagesData, incidentsData, allItemsGet, coefData)
         return reactReport
     }

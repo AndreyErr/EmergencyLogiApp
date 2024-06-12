@@ -176,7 +176,7 @@ function Items(){
                     (user.user['status'] >= 4 || itemsType.type_flag == 1) ? <option key={itemsType.type_id} value={itemsType.type_id}>{itemsType.type_name}{(itemsType.type_flag === 1 ? null : " (Не активно)")}</option> : null
                 )}
             </select>
-            <h4 className="fst-italic text-black">Все предметы {isItemsLoading ? <Loader /> : null}</h4>
+            <h4 className="fst-italic text-black">Предметы {isItemsLoading ? <Loader /> : null}</h4>
             <table className="table table-hover">
                 <thead>
                     <tr>

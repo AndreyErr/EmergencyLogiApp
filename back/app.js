@@ -15,14 +15,14 @@ const errorMiddleware = require('./exceptions/errorMiddleware');
 app.use(express.json());
 app.use(cors());
 
-// Middleware для добавления задержки
-const delayMiddleware = async (req, res, next) => {
-  await new Promise(resolve => setTimeout(resolve, 1000)); // задержка 2 секунды
-  next();
-};
+// // Middleware для добавления задержки
+// const delayMiddleware = async (req, res, next) => {
+//   await new Promise(resolve => setTimeout(resolve, 1000)); // задержка 2 секунды
+//   next();
+// };
 
-// Используем middleware для задержки на каждый запрос
-app.use(delayMiddleware);
+// // Используем middleware для задержки на каждый запрос
+// app.use(delayMiddleware);
 
 app.use('/api', router);
 app.get('/', (req, res) => {

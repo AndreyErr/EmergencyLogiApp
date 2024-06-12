@@ -91,21 +91,20 @@ function ItemForm(props){
 
       return(
         <span>
-                <button type="button" className="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target={`#createUser${props.id}`}>
-              {props.type == "create" ? "Создать пользователя" : "Изменить " + itemsData.name}
+                <button type="button" className="btn btn-outline-danger btn-sm me-2" data-bs-toggle="modal" data-bs-target={`#createUser${props.id}`}>
+              {props.type == "create" ? "Создать предмет" : "Изменить " + itemsData.name}
             </button>
             <div className="modal fade text-dark" id={`createUser${props.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div className="modal-dialog modal-dialog-centered  modal-xl">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">Создать пользователя</h1>
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">Изменение предмета</h1>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div className="modal-body">
                     <form>
-                    <h2 className="fs-5">Логин и пароль нужно передать сотруднику!</h2>
                     {itemsCreteResult}
-                    <label htmlFor="type" className="form-label">Тип пользователя</label>
+                    <label htmlFor="type" className="form-label">Категория предмета</label>
                     <select 
                       className="form-select" 
                       aria-label="Тип пользователя"
@@ -117,7 +116,7 @@ function ItemForm(props){
                         <option key={itemsType.type_id} value={itemsType.type_id}>{itemsType.type_name}</option>
                       )}
                     </select>
-                    <label htmlFor="flag" className="form-label">Флаг</label>
+                    <label htmlFor="flag" className="form-label">Статус</label>
                     <select 
                       className="form-select" 
                       aria-label="Тип пользователя"
@@ -143,7 +142,7 @@ function ItemForm(props){
                     </div>
                     <div className="mb-3">
                       <label htmlFor="descr" className="form-label">Описание</label>
-                      <input 
+                      <textarea 
                         type="text" 
                         name="descr" 
                         value={itemsData.descr}

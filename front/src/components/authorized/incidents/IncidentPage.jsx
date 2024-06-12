@@ -16,6 +16,7 @@ function IncidentPage(props) {
   const [coordsStoragesItems, setCoordsStoragesItems] = useState([]);
   const [pathStoragesItems, setPathStoragesItems] = useState([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [processed, setProcessed] = useState("NO");
 
   useEffect(() => {
     document.title = 'Инцидент';
@@ -32,6 +33,8 @@ function IncidentPage(props) {
         } else {
           jsonParsed = incidentData.json;
         }
+        if(jsonParsed.processed)
+          setProcessed(jsonParsed.processed)
 
         if(user.user['access'] == 2){
           jsonParsed = {'input_incident_information': jsonParsed}
@@ -42,8 +45,8 @@ function IncidentPage(props) {
 
         let coordsWithItems = [];
         let paths = [];
-
-        if(user.user['access'] != 2){ Object.values(jsonParsed.reaction.storagesData).forEach(storage => {
+        
+        if(user.user['access'] != 2 && jsonParsed.reaction && jsonParsed.reaction.storagesData){ Object.values(jsonParsed.reaction.storagesData).forEach(storage => {
             coordsWithItems.push([storage.id, storage.coordsBD]);
           if (storage.rodeInfo && storage.rodeInfo.paths.length > 0) {
             paths.push(storage.rodeInfo.paths[0].points);
@@ -56,6 +59,7 @@ function IncidentPage(props) {
         setIsDataLoading(false);
       } catch (e) {
         console.log(e)
+        setIsDataLoading(false);
       }
     };
 
@@ -89,7 +93,8 @@ function IncidentPage(props) {
         <Loader />
       ) : (
         <>
-          <h2>Инцидент №{data.id}</h2>
+          <h2>Инцидент №{data.id} </h2>
+          {processed != "fin" ? <h5>В обработке, перезагрузите страницу через некоторое время <Loader /></h5> : null}
           <MapContainerForIncidentCreate
             setAddress={setAddress}
             coords={coords}
@@ -121,7 +126,7 @@ function IncidentPage(props) {
                         {Object.entries(incidentDetails).map(([paramName, paramValue], paramIndex) => (
                           <tr key={paramIndex}>
                             <td>{paramName}</td>
-                            <td>{paramValue}</td>
+                            <td>{String(paramValue)}</td>
                           </tr>
                         ))}
                         <tr><td colSpan="2"></td></tr>
@@ -134,6 +139,7 @@ function IncidentPage(props) {
           </ul>
           {user.user['access'] != 2 ? <>
           <div className="accordion mt-2" id="accordionExample">
+          {processed != "fin" ? <><hr /><h5>В обработке, перезагрузите страницу через некоторое время <Loader /></h5></> : <>
           <div className="accordion-item">
             <h2 className="accordion-header" id="panelsStayOpen-heading1">
               <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse1" aria-expanded="false" aria-controls="panelsStayOpen-collapse1">
@@ -163,6 +169,10 @@ function IncidentPage(props) {
                   <tr>
                     <td>Процент взятия со склада за 1 проход</td>
                     <td>{json.reaction.coefData.percent_taken_from_warehouse}%</td>
+                  </tr>
+                  <tr>
+                    <td>Коэффициент дистанции по дорогам (от дистанции по прямой)</td>
+                    <td>x{json.reaction.coefData.road_distanse_multiplexer}</td>
                   </tr>
                 </tbody>
               </table>
@@ -236,7 +246,7 @@ function IncidentPage(props) {
                   <div key={incidentName} className={`col-md-${Object.keys(json.reaction.incidentsData).length == 2 ? "12" : "6"}`}>
                     <ul className="list-group mt-2">
                       <li className="list-group-item"><b>Код инцидента</b>: {incidentName}</li>
-                      <li className="list-group-item"><b>Время реакции</b>: {incidentDetails.react_time} мин</li>
+                      <li className="list-group-item"><b>Примерное время реакции</b>: {incidentDetails.react_time} - {incidentDetails.react_time_max} мин</li>
                       <li className="list-group-item"><b>Радиус поиска</b>: {incidentDetails.radius}м</li>
                       <li className="list-group-item"><b>Радиус поиска максимальный</b>: {incidentDetails.max_radius}м</li>
                       <li className="list-group-item"><b>Радиус поиска минимальный</b>: {incidentDetails.min_radius}м</li>
@@ -348,7 +358,7 @@ function IncidentPage(props) {
               </div>
             ) : (
               Object.entries(json.reaction.storagesData).map(([storageId, storageDetails]) => (
-                <div key={storageId} className="col-md-6">
+                <div key={storageId} className={`col-md-${Object.keys(json.reaction.storagesData).length == 1 ? "12" : "6"}`}>
                   <ul className="list-group mt-2">
                     <li className="list-group-item"><b>№ склада</b>: №{storageId}</li>
                     <li className="list-group-item"><b>Адрес</b>: {getAddr(storageDetails.addr)}</li>
@@ -425,6 +435,7 @@ function IncidentPage(props) {
               </div>
             </div>
           </div>
+          </>}
           <div className="accordion-item">
             <h2 className="accordion-header" id="panelsStayOpen-heading6">
               <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse6" aria-expanded="false" aria-controls="panelsStayOpen-collapse6">

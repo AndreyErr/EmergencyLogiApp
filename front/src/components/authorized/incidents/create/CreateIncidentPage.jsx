@@ -155,6 +155,8 @@ function CreateIncidentPage(props){
       setError('')
       if(address.length < 1){
         setError('Не выбран адрес!')
+      } else if (selectedIncidents.length === 0) {
+        setError('Не выбран инцидент!')
       } else {
         setIsLoginLoading(true)
         const addrData = JSON.parse(address);
@@ -163,13 +165,13 @@ function CreateIncidentPage(props){
           const defaultIncident = { [selectedIncidents[0].code_name]: {} };
           await createIncident(coordsFinale, defaultIncident)
             .then((result) => {
-              setErrorCreate(["Создано", "success"])
+              setErrorCreate([`Создано, <a href="http://localhost:3000/incidents/id/${result.data}">перейти</a>`, "success"])
             })
             .catch(error => {setErrorCreate([error.response.data.message, "danger"])});
         } else {
           await createIncident(coordsFinale, incidentData)
             .then((result) => {
-              setErrorCreate(["Создано", "success"])
+              setErrorCreate([`Создано, <a href="http://localhost:3000/incidents/id/${result.data}">перейти</a>`, "success"])
             })
             .catch(error => {setErrorCreate([error.response.data.message, "danger"])});
         }
@@ -193,8 +195,9 @@ function CreateIncidentPage(props){
       const max = constraints[2];
       return value >= min && value <= max;
     } else if (constraintType === 'in') {
-      const validValues = constraints.slice(1);
-      return validValues.includes(value);
+      const validValues = constraints.slice(1).map(String);
+      console.log(validValues, String(value));
+      return validValues.includes(String(value));
     }
   
     return true;
@@ -232,6 +235,7 @@ function CreateIncidentPage(props){
               </thead>
               <tbody>
                 {incident && Object.entries(incident.response).map(([key, value]) => (
+                  value[2] == "active" ? <>
                   <tr>
                     <td>{key}{value[1] === 'required' ? "*" : null}</td>
                     <td>{value[0]}</td>
@@ -260,6 +264,7 @@ function CreateIncidentPage(props){
                       />
                     </td>
                   </tr>
+                  </> : null
                 ))}
               </tbody>
             </table>
