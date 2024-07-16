@@ -94,7 +94,7 @@ function IncidentPage(props) {
       ) : (
         <>
           <h2>Инцидент №{data.id} </h2>
-          {processed != "fin" ? <h5>В обработке, перезагрузите страницу через некоторое время <Loader /></h5> : null}
+          {processed != "fin" && user.user['access'] != 2 ? <h5>В обработке, перезагрузите страницу через некоторое время <Loader /></h5> : null}
           <MapContainerForIncidentCreate
             setAddress={setAddress}
             coords={coords}

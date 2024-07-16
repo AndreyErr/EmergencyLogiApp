@@ -662,17 +662,29 @@ class incidentsService {
 
             let itemsInStorages = {}
             for(let storage_id in storagesDataForIncident){
+                console.log("storage_id", storage_id)
                 storage_id = storage_id.toString()
                 itemsInStorages[storage_id] = {...storagesDataForIncident[storage_id].foundItems}
+                console.log("itemsInStorages[storage_id]", itemsInStorages[storage_id])
+                console.log("storagesDataForIncident[storage_id].foundItems", storagesDataForIncident[storage_id].foundItems)
                 if(!storagesData[storage_id]){
+                    console.log("!storagesData[storage_id]")
                     storagesData[storage_id] = storagesDataForIncident[storage_id]
                     for (let found_idem_name in storagesData[storage_id].foundItems){
+                        console.log("storagesData[storage_id].foundItems[found_idem_name]", storagesData[storage_id].foundItems[found_idem_name], storagesData[storage_id].foundItems[found_idem_name][0])
                         storagesData[storage_id].foundItems[found_idem_name] = storagesData[storage_id].foundItems[found_idem_name][0]
                     }
                 }else{
-                    for (let found_idem_name in storagesData[storage_id].foundItems){
+                    console.log("storagesData[storage_id]")
+                    for (let found_idem_name in storagesDataForIncident[storage_id].foundItems){
+                        console.log("storagesData[storage_id].foundItems", storagesData[storage_id].foundItems, found_idem_name)
                         if(storagesDataForIncident[storage_id].foundItems[found_idem_name]){
-                            storagesData[storage_id].foundItems[found_idem_name] += storagesDataForIncident[storage_id].foundItems[found_idem_name][0]
+                            console.log("storagesDataForIncident[storage_id].foundItems[found_idem_name]", storagesDataForIncident[storage_id].foundItems[found_idem_name], storagesDataForIncident[storage_id].foundItems[found_idem_name][0])
+                            if(storagesData[storage_id].foundItems[found_idem_name]){
+                                storagesData[storage_id].foundItems[found_idem_name] += storagesDataForIncident[storage_id].foundItems[found_idem_name][0]
+                            }else{
+                                storagesData[storage_id].foundItems[found_idem_name] = storagesDataForIncident[storage_id].foundItems[found_idem_name][0]
+                            }
                         }
                     }
                 }
