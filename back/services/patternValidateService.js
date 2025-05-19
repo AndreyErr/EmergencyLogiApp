@@ -185,7 +185,7 @@ class patternValidateService {
 
         if(!jsonData.hasOwnProperty('code_name') || !this.validateValue("строковой", jsonData.code_name))
             throw apiError.BadRequest('VALIDATE', 'Отсутствует или неправильно заполнен пункт code_name. Разрешена только строка текста');
-        if((!jsonData.hasOwnProperty('time') || !this.validateValue("числовой", jsonData.time) || jsonData.time < 1) && type != "common")
+        if((!jsonData.hasOwnProperty('time') || !this.validateValue("строковой", jsonData.time) || jsonData.time < 1) || type == "common")
             throw apiError.BadRequest('VALIDATE', 'Отсутствует или неправильно заполнен пункт time. Разрешено только число больше 0 (дистанция в метрах)');
         if(!jsonData.hasOwnProperty('name') || !this.validateValue("строковой", jsonData.name))
             throw apiError.BadRequest('VALIDATE', 'Отсутствует или неправильно заполнен пункт name. Разрешена только строка текста');

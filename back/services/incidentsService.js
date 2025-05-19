@@ -283,7 +283,7 @@ class incidentsService {
         }
 
         // Фильтрация складов по радиусу и сортировка по расстоянию
-        // filteredStoragesList = filteredStoragesList.filter(storage => storage.distanseByRoad <= distanseRoadMax)
+        filteredStoragesList = filteredStoragesList.filter(storage => storage.distanseByRoad <= distanseRoadMax)
         filteredStoragesList.forEach(storage => {
             storage.within_length_road = storage.distanseByRoad <= distanseRoadMax;
         });
