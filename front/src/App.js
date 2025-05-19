@@ -31,7 +31,9 @@ const App = observer( () => {
             setChangePasswordFlag(true)
           }
         }
-      }).finally(() => setLoading(false))
+      }).catch(error => {
+      console.error("Check error:", error);
+    }).finally(() => setLoading(false))
     }, 0)
   }, [])
 
